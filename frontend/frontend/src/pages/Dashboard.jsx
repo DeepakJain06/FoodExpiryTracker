@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import 'animate.css';
+import NotificationToggle from '../components/NotificationToggle';
 
 export default function Dashboard() {
     const [foods, setFoods] = useState([]);
@@ -155,6 +156,7 @@ export default function Dashboard() {
             <ToastContainer position="top-right" autoClose={2500} />
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
                 <h2 className="display-6 fw-bold text-success mb-0">🍱 Your Food Items</h2>
+                <NotificationToggle />
                 <div>
                     <button
                         onClick={handleAddFood}
@@ -162,6 +164,7 @@ export default function Dashboard() {
                     >
                         <i className="bi bi-plus-circle me-1"></i> Add Food
                     </button>
+
                     <button
                         onClick={handleLogout}
                         className="btn btn-outline-danger shadow"
