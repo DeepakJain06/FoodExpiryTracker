@@ -44,7 +44,7 @@ cd your-repo-name
 🧩 2. Backend Setup (/backend)
 bash
 Copy code
-cd backend
+##cd backend
 npm install
 🔐 Create a .env file inside /backend folder:
 env
