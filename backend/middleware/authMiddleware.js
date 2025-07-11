@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-
 module.exports = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -10,11 +9,9 @@ module.exports = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.userId;
+        req.user = { id: decoded.userId }; // ✅ set as `req.user.id` to match your usage
         next();
     } catch (err) {
         res.status(403).json({ message: 'Invalid token' });
     }
 };
-
-// This middleware checks for a JWT token in the Authorization header of incoming requests. 

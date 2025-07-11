@@ -4,7 +4,13 @@ import { FaUserPlus, FaEye, FaEyeSlash } from 'react-icons/fa';
 import 'animate.css';
 
 export default function Register() {
-    const [form, setForm] = useState({ email: '', password: '', confirmPassword: '' });
+    const [form, setForm] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -19,18 +25,26 @@ export default function Register() {
         e.preventDefault();
         setLoading(true);
         setError('');
+
         if (form.password !== form.confirmPassword) {
             setError('Passwords do not match');
             setLoading(false);
             return;
         }
+
         try {
             const res = await fetch('http://localhost:5000/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: form.email, password: form.password }),
+                body: JSON.stringify({
+                    username: form.username,
+                    email: form.email,
+                    password: form.password,
+                }),
             });
+
             const data = await res.json();
+
             if (res.ok) {
                 navigate('/login');
             } else {
@@ -40,6 +54,7 @@ export default function Register() {
             setError('An error occurred. Try again.');
             console.error(err);
         }
+
         setLoading(false);
     };
 
@@ -50,11 +65,27 @@ export default function Register() {
                     <h2 className="text-center mb-4 text-primary fw-bold d-flex align-items-center justify-content-center gap-2">
                         <FaUserPlus /> Register
                     </h2>
+
                     {error && (
                         <div className="alert alert-danger animate__animated animate__fadeInDown mb-3 py-2">
                             {error}
                         </div>
                     )}
+
+                    <div className="mb-3">
+                        <label htmlFor="username" className="form-label fw-semibold">Username</label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            className="form-control"
+                            placeholder="Enter your username"
+                            value={form.username}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label fw-semibold">Email</label>
                         <input
@@ -68,6 +99,7 @@ export default function Register() {
                             required
                         />
                     </div>
+
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label fw-semibold">Password</label>
                         <div className="input-group">
@@ -92,6 +124,7 @@ export default function Register() {
                             </button>
                         </div>
                     </div>
+
                     <div className="mb-4">
                         <label htmlFor="confirmPassword" className="form-label fw-semibold">Confirm Password</label>
                         <input
@@ -105,10 +138,16 @@ export default function Register() {
                             required
                         />
                     </div>
-                    <button className="btn btn-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2" type="submit" disabled={loading}>
+
+                    <button
+                        className="btn btn-primary w-100 fw-semibold d-flex align-items-center justify-content-center gap-2"
+                        type="submit"
+                        disabled={loading}
+                    >
                         {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                         Register
                     </button>
+
                     <div className="text-center mt-3">
                         <span className="text-secondary">Already have an account?</span>{' '}
                         <Link to="/login" className="text-primary fw-semibold text-decoration-none">Login</Link>
