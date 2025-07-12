@@ -1,34 +1,52 @@
 const express = require('express');
 const mongoose = require('mongoose');
-require("./emailScheduler"); 
 const cors = require('cors');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const authRoutes = require('./routes/authRoutes');
 const foodRoutes = require('./routes/foodRoutes');
-require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
-
-// Make sure path is correct
-// Ensure the email scheduler is imported after the server starts
-// This will allow the email scheduler to run in the background without blocking the server startup
+require('./emailScheduler'); // Ensure this runs after .env is loaded
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Mounting the routes correctly
-app.use('/api/auth', authRoutes);     // Register: /api/auth/register, Login: /api/auth/login
-app.use('/api/foods', foodRoutes);
+// Routes
+app.use('/api/auth', authRoutes);    // Register/Login: /api/auth/*
+app.use('/api/foods', foodRoutes);   // Food CRUD: /api/foods/*
 app.use('/api/user', userRoutes);
 
-// Add/Get Food: /api/foods
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const collections = await mongoose.connection.db.listCollections().toArray();
+        res.json({
+            status: 'success',
+            message: 'MongoDB is connected!',
+            collections: collections.map(col => col.name)
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ status: 'error', message: 'Failed to fetch collections' });
+    }
+});
+// User management: /api/user/*
 
-// Connect to MongoDB and start the server
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 })
     .then(() => {
-        console.log('Connected to MongoDB');
-        app.listen(5000, () => console.log('Server running on http://localhost:5000'));
+        console.log('✅ Connected to MongoDB Atlas');
+        app.listen(5000, () => {
+            console.log('🚀 Server running at http://localhost:5000');
+        });
     })
-    .catch(err => console.error('MongoDB connection error:', err));
+    .catch((err) => {
+        console.error('❌ MongoDB connection error:', err.message);
+    });
