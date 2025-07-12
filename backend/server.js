@@ -37,16 +37,10 @@ app.get('/api/test-db', async (req, res) => {
 // User management: /api/user/*
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         console.log('✅ Connected to MongoDB Atlas');
-        app.listen(5000, () => {
-            console.log('🚀 Server running at http://localhost:5000');
-        });
+        app.listen(5000, () => console.log('🚀 Server running at http://localhost:5000'));
     })
-    .catch((err) => {
-        console.error('❌ MongoDB connection error:', err.message);
-    });
+    .catch(err => console.error('❌ MongoDB connection error:', err));
+
